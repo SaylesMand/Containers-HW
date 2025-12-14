@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py .
 
-# Создаем директорию для volume (требование ЛР)
+# Создаем директорию для volume
 RUN mkdir /app/logs
 
 EXPOSE 5000
