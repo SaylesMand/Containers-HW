@@ -4,3 +4,5 @@
 
 
 ## Шаг 2. Запуск в Kubernetes
+
+![Шаг 1: создание образа](https://github.com/SaylesMand/Containers-HW/raw/main/lab4/app/step_2.kubernetes_launch.png)
