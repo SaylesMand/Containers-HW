@@ -6,6 +6,7 @@ metadata:
     app: nextcloud
 type: Opaque
 stringData:
+  NEXTCLOUD_ADMIN_USER: "big_bebra_user"
   NEXTCLOUD_ADMIN_PASSWORD: "parol_zaparolniy"
 ---
 apiVersion: apps/v1
@@ -39,36 +40,50 @@ spec:
           containerPort: 80
           protocol: TCP
         env:
-        - name: NEXTCLOUD_UPDATE
-          value: '1'
-        - name: ALLOW_EMPTY_PASSWORD
-          value: 'yes'
-        - name: POSTGRES_HOST
-          value: postgres-service
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
               name: postgres-configmap
               key: POSTGRES_DB
-        - name: NEXTCLOUD_TRUSTED_DOMAINS
-          value: "127.0.0.1"
         - name: POSTGRES_USER
           valueFrom:
-            configMapKeyRef:
-              name: postgres-configmap
+            secretKeyRef:
+              name: postgres-secret
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: postgres-configmap
+            secretKeyRef:
+              name: postgres-secret
               key: POSTGRES_PASSWORD
         - name: NEXTCLOUD_ADMIN_USER
-          value: "big_bebra_user"
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: NEXTCLOUD_ADMIN_USER
         - name: NEXTCLOUD_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
               name: nextcloud-secret
               key: NEXTCLOUD_ADMIN_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: nextcloud-configmap
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
         imagePullPolicy: IfNotPresent
       restartPolicy: Always
       dnsPolicy: ClusterFirst

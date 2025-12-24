@@ -6,6 +6,4 @@ metadata:
     app: postgres
 data:
   POSTGRES_DB: "postgres"
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "parol_neparol"
 
